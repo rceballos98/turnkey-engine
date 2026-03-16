@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     environment: str = "development"
     anthropic_api_key: str = ""
     firecrawl_api_key: str = ""
+    browserless_url: str = ""
+    browserless_token: str = ""
 
 
 settings = Settings()

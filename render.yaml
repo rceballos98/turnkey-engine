@@ -15,6 +15,10 @@ services:
         sync: false
       - key: FIRECRAWL_API_KEY
         sync: false
+      - key: BROWSERLESS_URL
+        sync: false
+      - key: BROWSERLESS_TOKEN
+        sync: false
       - key: BASE_URL
         sync: false
 
@@ -33,3 +37,9 @@ services:
         sync: false
       - key: FIRECRAWL_API_KEY
         sync: false
+      - key: BROWSERLESS_URL
+        sync: false
+      - key: BROWSERLESS_TOKEN
+        sync: false
+      - key: PDF_DIR
+        value: /data/pdfs

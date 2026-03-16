@@ -4,13 +4,13 @@ Background worker that polls the job queue and processes reports.
 Handles SIGTERM gracefully for clean shutdown during Render deploys.
 """
 
+import asyncio
 import signal
 import time
 from datetime import datetime, timezone
 
 from sqlalchemy import text
 
-from app.agent import run_agent
 from app.database import SessionLocal
 from app.models import JobQueue, Report
 
@@ -51,7 +51,9 @@ def claim_job(db):
 
 
 def process_job(db, job_id, report_id):
-    """Run the agent and update the report with the result."""
+    """Run the pipeline and update the report with the result."""
+    from app.pipeline import run_report_pipeline
+
     report = db.query(Report).filter(Report.id == report_id).first()
     if not report:
         print(f"Report {report_id} not found, skipping job {job_id}")
@@ -61,10 +63,12 @@ def process_job(db, job_id, report_id):
         report.status = "processing"
         db.commit()
 
-        result = run_agent(report.query)
+        result = asyncio.run(run_report_pipeline(report.address, str(report.id)))
 
+        report.raw_data = result["raw_data"]
+        report.result_json = result["transformed"]
+        report.pdf_path = result["pdf_path"]
         report.status = "completed"
-        report.result = result
         report.updated_at = datetime.now(timezone.utc)
 
         db.query(JobQueue).filter(JobQueue.id == job_id).update(

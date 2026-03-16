@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import Column, String, DateTime, Text, Index
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from app.database import Base
 
@@ -12,8 +12,10 @@ class Report(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     status = Column(String(50), nullable=False, default="queued")
-    query = Column(Text, nullable=False)
-    result = Column(Text, nullable=True)
+    address = Column(Text, nullable=False)
+    raw_data = Column(JSONB, nullable=True)
+    result_json = Column(JSONB, nullable=True)
+    pdf_path = Column(Text, nullable=True)
     error = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))

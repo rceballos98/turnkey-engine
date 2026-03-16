@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurnKey Vetting — Due Diligence Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-card: #ffffff;
+    --bg-detail: #f8f9fa;
+    --border: #e2e5e9;
+    --border-subtle: #eef0f2;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --accent: hsl(220, 10%, 20%);
+    --accent-dim: hsla(220, 10%, 20%, 0.06);
+    --green: #059669;
+    --green-dim: #ecfdf5;
+    --red: #dc2626;
+    --red-dim: #fef2f2;
+    --amber: #d97706;
+    --amber-dim: #fffbeb;
+    --blue: #2563eb;
+    --cover-bg: hsl(220, 10%, 12%);
+    --cover-text: hsl(220, 5%, 88%);
+    --cover-muted: hsl(220, 5%, 55%);
+    --cover-accent: hsl(40, 70%, 55%);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Cover Page ── */
+  .cover-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+    background: var(--cover-bg);
+    color: var(--cover-text);
+  }
+  .cover-page::before {
+    content: '';
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, hsla(40, 70%, 55%, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover-logo {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--cover-muted);
+    margin-bottom: 60px;
+  }
+  .cover-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--cover-accent);
+    margin-bottom: 16px;
+  }
+  .cover-address {
+    font-size: 42px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    color: var(--cover-text);
+    margin-bottom: 8px;
+  }
+  .cover-subtitle {
+    font-size: 16px;
+    color: var(--cover-muted);
+    margin-bottom: 60px;
+  }
+  .cover-divider {
+    width: 48px;
+    height: 1px;
+    background: var(--cover-accent);
+    margin-bottom: 32px;
+  }
+  .cover-tagline {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--cover-muted);
+    letter-spacing: -0.01em;
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+  .cover-prepared {
+    font-size: 13px;
+    color: var(--cover-muted);
+    margin-top: 80px;
+  }
+  .cover-prepared strong {
+    color: var(--cover-text);
+    font-weight: 500;
+  }
+  .cover-url {
+    font-size: 12px;
+    color: var(--cover-accent);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Report Body ── */
+  .report-body {
+    padding: 32px 24px;
+  }
+
+  /* ── Section ── */
+  .section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 24px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .section-header h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .section-header .so-what {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  /* ── Metric Cards ── */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border-subtle);
+  }
+  .metric {
+    background: var(--bg-card);
+    padding: 16px 20px;
+    text-align: center;
+  }
+  .metric .value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .metric .value.green { color: var(--green); }
+  .metric .value.red { color: var(--red); }
+  .metric .value.amber { color: var(--amber); }
+  .metric .label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .metric .context {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── Detail area ── */
+  .detail {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-detail);
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: top;
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row { background: var(--amber-dim); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-amber { background: var(--amber-dim); color: var(--amber); }
+  .badge-muted { background: hsla(220, 10%, 20%, 0.5); color: var(--text-muted); }
+
+  /* ── Violation list ── */
+  .violation-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .violation-item:last-child { border-bottom: none; }
+  .violation-item .v-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .violation-item .v-desc {
+    font-size: 13px;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .violation-item .v-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── Pros/Cons ── */
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px 24px;
+  }
+  .pros-cons h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .pros-cons ul {
+    list-style: none;
+    padding: 0;
+  }
+  .pros-cons li {
+    padding: 6px 0;
+    font-size: 13px;
+    padding-left: 20px;
+    position: relative;
+  }
+  .pros li::before { content: "+"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .cons li::before { content: "!"; position: absolute; left: 2px; color: var(--red); font-weight: 700; }
+
+  /* ── Inline metric row ── */
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 14px;
+  }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-row .mr-label { color: var(--text-muted); }
+  .metric-row .mr-value { font-weight: 600; color: var(--text); }
+
+  /* ── Agency violation summary ── */
+  .agency-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-subtle);
+  }
+  .agency-card {
+    background: var(--bg-card);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .agency-card .agency-name {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+  .agency-card .agency-open {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 4px 0 2px;
+    letter-spacing: -0.02em;
+  }
+  .agency-card .agency-total {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── Section sub-headers ── */
+  .detail h4 {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Footer ── */
+  .report-footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 20px;
+  }
+  .footer-logo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .footer-tagline {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .footer-disclaimer {
+    font-size: 11px;
+    color: #9ca3af;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  .footer-url {
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 12px;
+  }
+
+  /* ── Page break hint for PDF ── */
+  .page-break { page-break-after: always; }
+
+  /* ══════════════════════════════════════════════ */
+  /* PRINT / PDF STYLES                             */
+  /* ══════════════════════════════════════════════ */
+  @media print {
+    /* ── Page setup ── */
+    @page {
+      size: Letter;
+      margin: 12mm 14mm 12mm 14mm;
+    }
+    @page :first {
+      margin: 0;
+    }
+
+    html, body {
+      background: var(--bg) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    body {
+      padding: 0;
+      max-width: none;
+    }
+
+    /* ── Cover page: full bleed, no margins ── */
+    .cover-page {
+      margin: 0;
+      padding: 60px 40px;
+      min-height: 100vh;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* ── Report body: let page margins handle spacing ── */
+    .report-body {
+      padding: 0;
+    }
+
+    /* ── Sections: keep together by default ── */
+    .section {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin-bottom: 4px;
+      overflow: visible;
+    }
+    .section-header {
+      padding: 14px 24px 10px;
+    }
+    /* Large sections that MUST break across pages */
+    .section--breakable {
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+    }
+
+    /* ── Force metric grids to single row ── */
+    /* 6-col sections: Executive Summary, The Building */
+    .metrics--6 {
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+    /* 4-col sections: The Unit, What It's Worth, Financial Health,
+       Building Systems, Neighborhood */
+    .metrics--4 {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+    /* 3-col sections: Who Runs, Work & Permits */
+    .metrics--3 {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .metrics {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .metric {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      padding: 8px 6px;
+    }
+
+    /* ── Prevent agency grid from splitting ── */
+    .agency-grid {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── Table integrity ── */
+    table {
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+    thead {
+      display: table-header-group;
+    }
+    tr {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    tbody {
+      break-inside: auto;
+    }
+
+    /* ── Detail sections: allow breaking, sub-elements stay intact ── */
+    .detail {
+      break-inside: auto;
+      page-break-inside: auto;
+    }
+
+    /* ── Violation items don't split ── */
+    .violation-item {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── Pros/Cons stay together ── */
+    .pros-cons {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── Metric rows don't split ── */
+    .metric-row {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── Section header stays with content below ── */
+    .section-header {
+      break-after: avoid;
+      page-break-after: avoid;
+      -webkit-column-break-after: avoid;
+      /* Pull next element along — if header doesn't fit with ~120px of
+         the next element, the whole chunk moves to the next page */
+      margin-bottom: -1px;
+      padding-bottom: 10px;
+    }
+    /* Force section header + next sibling to stay together */
+    .section-header + .metrics,
+    .section-header + .agency-grid,
+    .section-header + .metric-row,
+    .section-header + .pros-cons,
+    .section-header + .detail {
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+
+    /* ── Sub-headers (h4) stay with content below ── */
+    .detail h4 {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    /* ── Footer on last page ── */
+    .report-footer {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── D1 fix: Keep Building Systems table together (only 5 rows) ── */
+    .section--breakable .detail table {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* ── D3 fix: Keep 311 complaints sub-section (h4 + table) together ── */
+    .detail h4 + table {
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+
+    /* ── D4 fix: Keep DOF Building Financials metric-rows together ── */
+    .detail .metric-row + .metric-row {
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+    /* Keep the h4 + first metric-row together */
+    .detail h4 + .metric-row {
+      break-before: avoid;
+      page-break-before: avoid;
+    }
+
+    /* ── D7/D8 fix: Ensure badge and highlight colors render in print ── */
+    .badge, .badge-green, .badge-red, .badge-amber, .badge-muted,
+    .highlight-row, td, th {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    /* D8: Force highlight-row background on cells for Chromium print */
+    .highlight-row td {
+      background: var(--amber-dim) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+
+    /* ── Ensure backgrounds render ── */
+    .section, .metric, .agency-card, .detail, .badge,
+    .badge-green, .badge-red, .badge-amber, .badge-muted,
+    .highlight-row, .report-header, .cover-page {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- COVER PAGE                                    -->
+<!-- ════════════════════════════════════════════ -->
+<div class="cover-page page-break">
+  <div class="cover-logo">turnkey</div>
+  <div class="cover-label">Due Diligence Report</div>
+  <div class="cover-address">{{cover_address_line1}}<br>{{cover_address_line2}}</div>
+  <div class="cover-subtitle">{{cover_location}}</div>
+  <div class="cover-divider"></div>
+  <div class="cover-tagline">Now, these walls can talk.</div>
+  <div class="cover-prepared">
+    Report prepared by <strong>TurnKey Vetting</strong><br>
+    Every address has a story — hear it before you buy.
+  </div>
+  <div class="cover-url">turnkeyvetting.com</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- REPORT BODY                                   -->
+<!-- ════════════════════════════════════════════ -->
+<div class="report-body">
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 1. EXECUTIVE SUMMARY                         -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>1. Executive Summary</h2>
+    <div class="so-what">Is this a good deal and are there any red flags?</div>
+  </div>
+  <div class="metrics metrics--6">
+    {{#exec_metrics}}
+    <div class="metric">
+      <div class="value {{.color}}">{{.value}}</div>
+      <div class="label">{{.label}}</div>
+      {{?.context}}<div class="context">{{.context}}</div>{{/context}}
+    </div>
+    {{/exec_metrics}}
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 2. THE UNIT                                   -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>2. The Unit</h2>
+    <div class="so-what">What am I getting for my money?</div>
+  </div>
+  <div class="metrics metrics--4">
+    <div class="metric">
+      <div class="value">{{unit_asking_price}}</div>
+      <div class="label">Asking Price</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{unit_size}}</div>
+      <div class="label">Size</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{unit_layout}}</div>
+      <div class="label">Layout</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{unit_ppsf}}</div>
+      <div class="label">$/sqft</div>
+    </div>
+  </div>
+  <div class="metric-row">
+    <span class="mr-label">Common Charges</span>
+    <span class="mr-value">{{unit_common_charges}}</span>
+  </div>
+  <div class="metric-row">
+    <span class="mr-label">Property Taxes</span>
+    <span class="mr-value">{{unit_property_taxes}}</span>
+  </div>
+  <div class="metric-row">
+    <span class="mr-label">Total Monthly Carry</span>
+    <span class="mr-value">{{unit_total_carry}}</span>
+  </div>
+  <div class="metric-row">
+    <span class="mr-label">Days on Market</span>
+    <span class="mr-value">{{unit_days_on_market}}</span>
+  </div>
+  <div class="detail">
+    {{?unit_features}}<p style="font-size:13px; margin-bottom:12px;"><strong>Features:</strong> {{unit_features}}</p>{{/unit_features}}
+    {{?unit_description}}<p style="font-size:13px; color:var(--text-muted);">{{unit_description}}</p>{{/unit_description}}
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 3. WHAT IT'S WORTH                            -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section section--breakable">
+  <div class="section-header">
+    <h2>3. What It's Worth</h2>
+    <div class="so-what">Am I overpaying?</div>
+  </div>
+  <div class="metrics metrics--4">
+    <div class="metric">
+      <div class="value">{{comp_median_ppsf}}</div>
+      <div class="label">Comp Median $/sqft</div>
+    </div>
+    <div class="metric">
+      <div class="value {{comp_vs_median_color}}">{{comp_vs_median}}</div>
+      <div class="label">Asking vs. Median</div>
+      <div class="context">{{comp_vs_median_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{comp_range_ppsf}}</div>
+      <div class="label">Comp Range $/sqft</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{comp_count}}</div>
+      <div class="label">Comps Found</div>
+    </div>
+  </div>
+  <div class="detail">
+    <table>
+      <thead>
+        <tr>
+          <th>Address</th>
+          <th>Price</th>
+          <th>$/sqft</th>
+          <th>Beds</th>
+          <th>Sqft</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#comps}}
+        <tr class="{{.row_class}}">
+          <td>{{{.address}}}</td>
+          <td>{{.price}}</td>
+          <td>{{.price_per_sqft}}</td>
+          <td>{{.beds}}</td>
+          <td>{{.sqft}}</td>
+          <td><span class="badge badge-{{.status_color}}">{{.status}}</span></td>
+        </tr>
+        {{/comps}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 4. THE BUILDING                               -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>4. The Building</h2>
+    <div class="so-what">What kind of building am I buying into?</div>
+  </div>
+  <div class="metrics metrics--6">
+    <div class="metric">
+      <div class="value">{{bldg_year_built}}</div>
+      <div class="label">Year Built</div>
+      <div class="context">{{bldg_age}}</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{bldg_floors}}</div>
+      <div class="label">Floors</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{bldg_units}}</div>
+      <div class="label">Residential Units</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{bldg_zoning}}</div>
+      <div class="label">Zoning</div>
+    </div>
+    <div class="metric">
+      <div class="value {{bldg_energy_color}}">{{bldg_energy_grade}}</div>
+      <div class="label">Energy Grade</div>
+    </div>
+    <div class="metric">
+      <div class="value {{bldg_landmark_color}}">{{bldg_landmark}}</div>
+      <div class="label">Landmark</div>
+      <div class="context">{{bldg_landmark_context}}</div>
+    </div>
+  </div>
+  <div class="detail">
+    <div class="metric-row">
+      <span class="mr-label">Building Class</span>
+      <span class="mr-value">{{bldg_class}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Lot Area</span>
+      <span class="mr-value">{{bldg_lot_area}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Assessed Value</span>
+      <span class="mr-value">{{bldg_assessed_value}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Certificate of Occupancy</span>
+      <span class="mr-value">{{bldg_cert_occupancy}}</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 5. WHO RUNS THE BUILDING                      -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>5. Who Runs the Building</h2>
+    <div class="so-what">Is this building well-managed?</div>
+  </div>
+  <div class="metrics metrics--3">
+    <div class="metric">
+      <div class="value {{reg_status_color}}">{{reg_status}}</div>
+      <div class="label">HPD Registration</div>
+      <div class="context">{{reg_expiry_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="font-size:15px;">{{reg_owner}}</div>
+      <div class="label">Owner</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="font-size:15px;">{{reg_agent}}</div>
+      <div class="label">Managing Agent</div>
+    </div>
+  </div>
+  <div class="detail">
+    <h4 style="margin-bottom:8px;">ACRIS Ownership History</h4>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Party</th><th>Amount</th></tr>
+      </thead>
+      <tbody>
+        {{#acris_history}}
+        <tr><td>{{.date}}</td><td>{{.type}}</td><td>{{.party}}</td><td>{{.amount}}</td></tr>
+        {{/acris_history}}
+      </tbody>
+    </table>
+    <h4 style="margin: 16px 0 8px;">Registered Contacts</h4>
+    <table>
+      <thead>
+        <tr><th>Role</th><th>Name</th><th>Phone</th></tr>
+      </thead>
+      <tbody>
+        {{#contacts}}
+        <tr><td>{{.role}}</td><td>{{.name}}</td><td>{{.phone}}</td></tr>
+        {{/contacts}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 6. FINANCIAL HEALTH                           -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section section--breakable">
+  <div class="section-header">
+    <h2>6. Financial Health</h2>
+    <div class="so-what">Are there hidden costs coming?</div>
+  </div>
+  <div class="metrics metrics--4">
+    <div class="metric">
+      <div class="value">{{fin_monthly_carry}}</div>
+      <div class="label">Monthly Carry</div>
+      <div class="context">{{fin_carry_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value {{fin_exemption_color}}">{{fin_exemption_type}}</div>
+      <div class="label">Tax Exemption</div>
+      <div class="context">{{fin_exemption_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value {{fin_liens_color}}">{{fin_liens_count}}</div>
+      <div class="label">Tax Liens</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{fin_expense_per_sqft}}</div>
+      <div class="label">Expense / sqft</div>
+    </div>
+  </div>
+  <div class="detail">
+    <h4 style="margin-bottom:8px;">DOF Building Financials</h4>
+    <div class="metric-row">
+      <span class="mr-label">Estimated Gross Income</span>
+      <span class="mr-value">{{fin_gross_income}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Estimated Expenses</span>
+      <span class="mr-value">{{fin_expenses}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Net Operating Income</span>
+      <span class="mr-value">{{fin_noi}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Full Market Value</span>
+      <span class="mr-value">{{fin_market_value}}</span>
+    </div>
+    <h4 style="margin: 16px 0 8px;">Tax Exemptions & Abatements</h4>
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Program</th><th>Annual Benefit</th><th>Expires</th></tr>
+      </thead>
+      <tbody>
+        {{#exemptions}}
+        <tr>
+          <td>{{.type}}</td>
+          <td><span class="badge badge-{{.badge_color}}">{{.program}}</span></td>
+          <td>{{.annual_benefit}}</td>
+          <td style="{{.expires_style}}">{{.expires}}</td>
+        </tr>
+        {{/exemptions}}
+      </tbody>
+    </table>
+    {{?tax_warning}}<p style="font-size:12px; color:var(--red); margin-top:12px; font-weight:500;">
+      {{{tax_warning}}}
+    </p>{{/tax_warning}}
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 7. VIOLATIONS & COMPLIANCE                    -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section section--breakable">
+  <div class="section-header">
+    <h2>7. Violations & Compliance</h2>
+    <div class="so-what">Is this building neglected?</div>
+  </div>
+  <div class="agency-grid">
+    {{#agencies}}
+    <div class="agency-card">
+      <div class="agency-name">{{.name}}</div>
+      <div class="agency-open" style="color:var(--{{.color}});">{{.open}}</div>
+      <div class="agency-total">of {{.total}} total</div>
+    </div>
+    {{/agencies}}
+  </div>
+  <div class="metric-row">
+    <span class="mr-label">Active HPD Litigation</span>
+    <span class="mr-value" style="color:var(--{{viol_litigation_color}});">{{viol_litigation}}</span>
+  </div>
+  <div class="metric-row">
+    <span class="mr-label">Open Complaints</span>
+    <span class="mr-value">{{viol_open_complaints}}</span>
+  </div>
+  <div class="detail">
+    <h4 style="margin-bottom:12px;">Open Violations</h4>
+    {{#violations_items}}
+    <div class="violation-item">
+      <div class="v-header">
+        <span class="badge badge-{{.badge_color}}">{{.badge_text}}</span>
+        <span style="font-size:12px; color:var(--text-muted);">{{.date}}</span>
+      </div>
+      <div class="v-desc">{{.description}}</div>
+      <div class="v-meta">{{.meta}}</div>
+    </div>
+    {{/violations_items}}
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 8. BUILDING SYSTEMS                           -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section section--breakable">
+  <div class="section-header">
+    <h2>8. Building Systems</h2>
+    <div class="so-what">Are the elevator and boiler going to fail on me?</div>
+  </div>
+  <div class="metrics metrics--4">
+    <div class="metric">
+      <div class="value">{{sys_elevator_count}}</div>
+      <div class="label">Elevators</div>
+      <div class="context">{{sys_elevator_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value {{sys_elevator_status_color}}">{{sys_elevator_status}}</div>
+      <div class="label">Inspection Status</div>
+      <div class="context">{{sys_elevator_status_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{sys_boiler_count}}</div>
+      <div class="label">Boilers</div>
+      <div class="context">{{sys_boiler_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value {{sys_boiler_status_color}}">{{sys_boiler_status}}</div>
+      <div class="label">Boiler Status</div>
+    </div>
+  </div>
+  <div class="detail">
+    <table>
+      <thead>
+        <tr><th>System</th><th>ID</th><th>Last Inspection</th><th>Result</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        {{#systems}}
+        <tr><td>{{.system}}</td><td>{{.id}}</td><td>{{.last_inspection}}</td><td><span class="badge badge-{{.result_color}}">{{.result}}</span></td><td>{{.notes}}</td></tr>
+        {{/systems}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 9. WORK & PERMITS                             -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>9. Work & Permits</h2>
+    <div class="so-what">Is anything being done to the building?</div>
+  </div>
+  <div class="metrics metrics--3">
+    <div class="metric">
+      <div class="value">{{permits_active_count}}</div>
+      <div class="label">Active Permits</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{permits_jobs_count}}</div>
+      <div class="label">Jobs (Last 5 Yrs)</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="font-size:14px;">{{permits_largest_type}}</div>
+      <div class="label">Largest Active Job</div>
+      <div class="context">{{permits_largest_desc}}</div>
+    </div>
+  </div>
+  <div class="detail">
+    <table>
+      <thead>
+        <tr><th>Filed</th><th>Type</th><th>Description</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {{#permits}}
+        <tr>
+          <td>{{.filed}}</td>
+          <td>{{.type}}</td>
+          <td>{{.description}}</td>
+          <td><span class="badge badge-{{.status_color}}">{{.status}}</span></td>
+        </tr>
+        {{/permits}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 10. THE NEIGHBORHOOD                          -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section section--breakable">
+  <div class="section-header">
+    <h2>10. The Neighborhood</h2>
+    <div class="so-what">What's it like to live here?</div>
+  </div>
+  <div class="metrics metrics--4">
+    <div class="metric">
+      <div class="value">{{hood_311_count}}</div>
+      <div class="label">311 Complaints (1yr)</div>
+      <div class="context">{{hood_311_top}}</div>
+    </div>
+    <div class="metric">
+      <div class="value">{{hood_crime_count}}</div>
+      <div class="label">Crime Incidents (1yr)</div>
+      <div class="context">{{hood_crime_top}}</div>
+    </div>
+    <div class="metric">
+      <div class="value {{hood_flood_color}}">{{hood_flood_zone}}</div>
+      <div class="label">Flood Zone</div>
+      <div class="context">{{hood_flood_context}}</div>
+    </div>
+    <div class="metric">
+      <div class="value {{hood_env_color}}">{{hood_env_count}}</div>
+      <div class="label">Environmental Sites</div>
+      <div class="context">{{hood_env_context}}</div>
+    </div>
+  </div>
+  <div class="detail">
+    <h4 style="margin-bottom:12px;">311 Complaints — Recent Activity</h4>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Description</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {{#complaints_recent}}
+        <tr>
+          <td>{{.date}}</td>
+          <td>{{.type}}</td>
+          <td>{{.description}}</td>
+          <td><span class="badge badge-{{.status_color}}">{{.status}}</span></td>
+        </tr>
+        {{/complaints_recent}}
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">{{hood_311_showing}}</p>
+
+    <h4 style="margin: 20px 0 8px;">311 Breakdown by Type (Last 12 Months)</h4>
+    <table>
+      <thead>
+        <tr><th>Category</th><th style="text-align:right;">Count</th><th style="text-align:right;">Most Recent</th></tr>
+      </thead>
+      <tbody>
+        {{#complaints_by_type}}
+        <tr><td>{{.category}}</td><td style="text-align:right; font-weight:600;">{{.count}}</td><td style="text-align:right; color:var(--text-muted);">{{.most_recent}}</td></tr>
+        {{/complaints_by_type}}
+      </tbody>
+    </table>
+
+    <h4 style="margin: 20px 0 8px;">Crime — Recent Incidents</h4>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        {{#crime_recent}}
+        <tr>
+          <td>{{.date}}</td>
+          <td>{{.type}}</td>
+          <td>{{.description}}</td>
+        </tr>
+        {{/crime_recent}}
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">{{hood_crime_showing}}</p>
+
+    <h4 style="margin: 20px 0 8px;">Crime Breakdown by Type (Last 12 Months)</h4>
+    <table>
+      <thead>
+        <tr><th>Category</th><th style="text-align:right;">Count</th><th style="text-align:right;">Most Recent</th></tr>
+      </thead>
+      <tbody>
+        {{#crime_by_type}}
+        <tr><td>{{.category}}</td><td style="text-align:right; font-weight:600;">{{.count}}</td><td style="text-align:right; color:var(--text-muted);">{{.most_recent}}</td></tr>
+        {{/crime_by_type}}
+      </tbody>
+    </table>
+
+    <h4 style="margin: 20px 0 8px;">Flood Zone</h4>
+    <div class="metric-row">
+      <span class="mr-label">FEMA Zone</span>
+      <span class="mr-value" style="color:var(--{{hood_flood_value_color}});">{{hood_flood_fema}}</span>
+    </div>
+    <div class="metric-row">
+      <span class="mr-label">Flood Insurance Required</span>
+      <span class="mr-value">{{hood_flood_insurance}}</span>
+    </div>
+
+    <h4 style="margin: 20px 0 8px;">Environmental Sites</h4>
+    {{?hood_env_none}}<p style="font-size:13px; color:var(--green);">No NYS environmental contamination sites found nearby.</p>{{/hood_env_none}}
+    {{?hood_env_list}}
+    <table>
+      <thead>
+        <tr><th>Site</th><th>Program</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {{#env_sites}}
+        <tr><td>{{.name}}</td><td>{{.program}}</td><td>{{.status}}</td></tr>
+        {{/env_sites}}
+      </tbody>
+    </table>
+    {{/hood_env_list}}
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- 11. PROS & CONS                               -->
+<!-- ════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <h2>11. Pros & Cons</h2>
+    <div class="so-what">Bottom line — what stands out from the data?</div>
+  </div>
+  <div class="pros-cons">
+    <div class="pros">
+      <h3 style="color:var(--green);">Notable Positives</h3>
+      <ul>
+        {{#pros}}
+        <li>{{.text}}</li>
+        {{/pros}}
+      </ul>
+    </div>
+    <div class="cons">
+      <h3 style="color:var(--red);">Notable Concerns</h3>
+      <ul>
+        {{#cons}}
+        <li>{{.text}}</li>
+        {{/cons}}
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- end report-body -->
+
+<!-- ════════════════════════════════════════════ -->
+<!-- FOOTER                                        -->
+<!-- ════════════════════════════════════════════ -->
+<div class="report-footer">
+  <div class="footer-logo">turnkey</div>
+  <div class="footer-tagline">Every address has a story — hear it before you buy.</div>
+  <div class="footer-disclaimer">
+    This report is based on publicly available data from NYC agencies and third-party sources.
+    It does not constitute legal, financial, or investment advice. Always consult qualified professionals
+    before making purchase decisions.
+  </div>
+  <div class="footer-url">turnkeyvetting.com</div>
+</div>
+
+</body>
+</html>

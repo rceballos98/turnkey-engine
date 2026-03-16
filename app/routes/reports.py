@@ -1,6 +1,8 @@
+from pathlib import Path
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 
@@ -12,7 +14,7 @@ router = APIRouter()
 
 
 class ReportRequest(BaseModel):
-    query: str
+    address: str
 
 
 class ReportResponse(BaseModel):
@@ -20,9 +22,11 @@ class ReportResponse(BaseModel):
 
     id: UUID
     status: str
-    query: str
-    result: str | None
-    error: str | None
+    address: str
+    raw_data: dict | None = None
+    result_json: dict | None = None
+    pdf_path: str | None = None
+    error: str | None = None
 
 
 @router.post("/reports", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
@@ -31,7 +35,7 @@ def create_report(
     db: Session = Depends(get_db),
     _: None = Depends(verify_api_key),
 ):
-    report = Report(query=request.query, status="queued")
+    report = Report(address=request.address, status="queued")
     db.add(report)
     db.flush()
 
@@ -56,3 +60,30 @@ def get_report(
             detail="Report not found",
         )
     return report
+
+
+@router.get("/reports/{report_id}/pdf")
+def get_report_pdf(
+    report_id: UUID,
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_api_key),
+):
+    report = db.query(Report).filter(Report.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    if not report.pdf_path:
+        raise HTTPException(status_code=404, detail="Report not yet generated")
+
+    report_file = Path(report.pdf_path)
+    if not report_file.exists():
+        raise HTTPException(status_code=404, detail="Report file not found on disk")
+
+    is_html = report_file.suffix == ".html"
+    media_type = "text/html" if is_html else "application/pdf"
+    filename = f"report-{report_id}{report_file.suffix}"
+
+    return FileResponse(
+        path=str(report_file),
+        media_type=media_type,
+        filename=filename,
+    )
