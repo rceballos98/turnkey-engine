@@ -3,9 +3,9 @@ services:
     name: turnkey-engine-api
     runtime: python
     plan: starter
-    buildCommand: pip install -r requirements.txt
-    preDeployCommand: alembic upgrade head
-    startCommand: gunicorn app.main:app -c gunicorn.conf.py
+    buildCommand: curl -LsSf https://astral.sh/uv/install.sh | sh && export PATH="$HOME/.local/bin:$PATH" && uv sync --frozen --no-dev
+    preDeployCommand: .venv/bin/alembic upgrade head
+    startCommand: .venv/bin/gunicorn app.main:app -c gunicorn.conf.py
     envVars:
       - key: DATABASE_URL
         sync: false
@@ -32,8 +32,8 @@ services:
     name: turnkey-engine-worker
     runtime: python
     plan: starter
-    buildCommand: pip install -r requirements.txt
-    startCommand: python -m app.worker
+    buildCommand: curl -LsSf https://astral.sh/uv/install.sh | sh && export PATH="$HOME/.local/bin:$PATH" && uv sync --frozen --no-dev
+    startCommand: .venv/bin/python -m app.worker
     envVars:
       - key: DATABASE_URL
         sync: false

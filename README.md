@@ -17,24 +17,26 @@ Client → turnkey-engine-api (FastAPI/Gunicorn) → Postgres (Render)
 ## Local Development
 
 ```bash
-# 1. Create virtualenv and install deps
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+# 1. Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 2. Start Postgres
+# 2. Sync dependencies (creates .venv automatically)
+uv sync
+
+# 3. Start Postgres
 docker run -d --name turnkey-pg -e POSTGRES_DB=turnkey -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:16
 
-# 3. Configure env
+# 4. Configure env
 cp .env.example .env
 
-# 4. Run migrations
-alembic upgrade head
+# 5. Run migrations
+uv run alembic upgrade head
 
-# 5. Start API
-uvicorn app.main:app --reload
+# 6. Start API
+uv run uvicorn app.main:app --reload
 
-# 6. Start worker (separate terminal)
-python -m app.worker
+# 7. Start worker (separate terminal)
+uv run python -m app.worker
 ```
 
 ## Testing
@@ -42,8 +44,8 @@ python -m app.worker
 Integration tests run against the real local Postgres — no mocking.
 
 ```bash
-source .venv/bin/activate
-pytest tests/ -v
+uv sync          # includes dev dependencies by default
+uv run pytest tests/ -v
 ```
 
 Tests cover: health check, auth (missing/invalid), report creation, 404 handling, and the full lifecycle (create → enqueue → claim → process → retrieve).

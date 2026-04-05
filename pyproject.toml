@@ -1,0 +1,26 @@
+[project]
+name = "turnkey-engine"
+version = "0.1.0"
+description = "FastAPI microservice with background worker and Postgres job queue"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
+    "uvicorn-worker>=0.2.0",
+    "gunicorn>=22.0.0",
+    "sqlalchemy>=2.0.0",
+    "psycopg2-binary>=2.9.0",
+    "alembic>=1.13.0",
+    "pydantic-settings>=2.0.0",
+    "httpx>=0.27.0",
+    "anthropic>=0.40.0",
+    "python-dotenv>=1.0.0",
+    "beautifulsoup4>=4.12.0",
+    "stripe>=8.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
