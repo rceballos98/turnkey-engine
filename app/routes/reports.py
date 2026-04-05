@@ -6,9 +6,9 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 
-from app.auth import verify_api_key
+from app.auth import AuthContext, get_auth_context
 from app.database import get_db
-from app.models import Report, JobQueue
+from app.models import Report, JobQueue, Payment
 
 router = APIRouter()
 
@@ -29,11 +29,38 @@ class ReportResponse(BaseModel):
     error: str | None = None
 
 
+# NOTE: /reports/status MUST be defined before /reports/{report_id}
+# so FastAPI doesn't treat "status" as a UUID path parameter.
+
+
+@router.get("/reports/status")
+def get_report_status(
+    session_id: str,
+    db: Session = Depends(get_db),
+):
+    """Public endpoint — look up report by Stripe session ID."""
+    payment = db.query(Payment).filter(
+        Payment.stripe_session_id == session_id,
+    ).first()
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+
+    report = db.query(Report).filter(Report.payment_id == payment.id).first()
+    if not report:
+        return {"status": "processing", "payment_status": payment.status}
+
+    return {
+        "report_id": str(report.id),
+        "status": report.status,
+        "payment_status": payment.status,
+    }
+
+
 @router.post("/reports", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
 def create_report(
     request: ReportRequest,
     db: Session = Depends(get_db),
-    _: None = Depends(verify_api_key),
+    auth: AuthContext = Depends(get_auth_context),
 ):
     report = Report(address=request.address, status="queued")
     db.add(report)
@@ -51,7 +78,7 @@ def create_report(
 def get_report(
     report_id: UUID,
     db: Session = Depends(get_db),
-    _: None = Depends(verify_api_key),
+    auth: AuthContext = Depends(get_auth_context),
 ):
     report = db.query(Report).filter(Report.id == report_id).first()
     if not report:
@@ -66,7 +93,7 @@ def get_report(
 def get_report_pdf(
     report_id: UUID,
     db: Session = Depends(get_db),
-    _: None = Depends(verify_api_key),
+    auth: AuthContext = Depends(get_auth_context),
 ):
     report = db.query(Report).filter(Report.id == report_id).first()
     if not report:

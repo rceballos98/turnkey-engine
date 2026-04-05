@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     firecrawl_api_key: str = ""
     browserless_url: str = ""
     browserless_token: str = ""
+    stripe_secret_key: str = ""
+    stripe_webhook_secret: str = ""
+    report_price_cents: int = 2500
 
 
 settings = Settings()

@@ -6,7 +6,7 @@ Integration tests — run against real local Postgres (turnkey-pg container).
 import uuid
 from unittest.mock import patch, AsyncMock
 
-from app.models import JobQueue, Report
+from app.models import JobQueue, Report, Payment
 from app.worker import claim_job, process_job
 
 
@@ -23,7 +23,7 @@ def test_health(client):
 def test_create_report_unauthorized(client):
     """No auth header at all → 401."""
     resp = client.post("/reports", json={"address": "test"})
-    assert resp.status_code in (401, 403)
+    assert resp.status_code == 401
 
 
 def test_create_report_invalid_key(client):
@@ -110,3 +110,83 @@ def test_full_lifecycle(client, db, auth_headers):
     body = resp.json()
     assert body["status"] == "completed"
     assert body["address"] == address_text
+
+
+# ── Payment auth ────────────────────────────────────────────────────
+
+def test_payment_token_auth(client, db):
+    """X-Payment-Token with valid paid payment → 200."""
+    # Create a payment + report
+    payment = Payment(
+        stripe_session_id="cs_test_abc123",
+        address="123 Main St",
+        address_hash="abc123",
+        amount_cents=2500,
+        currency="usd",
+        status="paid",
+    )
+    db.add(payment)
+    db.flush()
+
+    report = Report(address="123 Main St", status="completed", payment_id=payment.id)
+    db.add(report)
+    db.commit()
+    db.refresh(report)
+
+    resp = client.get(
+        f"/reports/{report.id}",
+        headers={"X-Payment-Token": "cs_test_abc123"},
+    )
+    assert resp.status_code == 200
+    assert resp.json()["address"] == "123 Main St"
+
+
+def test_payment_token_invalid(client):
+    """X-Payment-Token with unknown session → 402."""
+    fake_id = str(uuid.uuid4())
+    resp = client.get(
+        f"/reports/{fake_id}",
+        headers={"X-Payment-Token": "cs_test_nonexistent"},
+    )
+    assert resp.status_code == 402
+
+
+# ── Status endpoint ─────────────────────────────────────────────────
+
+def test_report_status_by_session(client, db):
+    """GET /reports/status?session_id= returns report info."""
+    payment = Payment(
+        stripe_session_id="cs_test_status",
+        address="456 Oak Ave",
+        address_hash="def456",
+        amount_cents=2500,
+        currency="usd",
+        status="paid",
+    )
+    db.add(payment)
+    db.flush()
+
+    report = Report(address="456 Oak Ave", status="queued", payment_id=payment.id)
+    db.add(report)
+    db.commit()
+    db.refresh(report)
+
+    resp = client.get("/reports/status?session_id=cs_test_status")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["report_id"] == str(report.id)
+    assert body["status"] == "queued"
+
+
+def test_report_status_not_found(client):
+    """GET /reports/status with unknown session_id → 404."""
+    resp = client.get("/reports/status?session_id=cs_test_unknown")
+    assert resp.status_code == 404
+
+
+# ── Checkout ────────────────────────────────────────────────────────
+
+def test_checkout_no_stripe(client):
+    """POST /checkout when Stripe not configured → 503."""
+    resp = client.post("/checkout", json={"address": "301 E 79th St"})
+    assert resp.status_code == 503

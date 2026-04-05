@@ -21,6 +21,12 @@ services:
         sync: false
       - key: BASE_URL
         sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: REPORT_PRICE_CENTS
+        value: "2500"
 
   - type: worker
     name: turnkey-engine-worker
@@ -40,6 +46,10 @@ services:
       - key: BROWSERLESS_URL
         sync: false
       - key: BROWSERLESS_TOKEN
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
         sync: false
       - key: PDF_DIR
         value: /data/pdfs

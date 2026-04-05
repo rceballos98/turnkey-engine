@@ -33,9 +33,10 @@ def db():
     try:
         yield session
     finally:
-        from app.models import JobQueue, Report
+        from app.models import JobQueue, Report, Payment
         session.execute(JobQueue.__table__.delete())
         session.execute(Report.__table__.delete())
+        session.execute(Payment.__table__.delete())
         session.commit()
         session.close()
 
